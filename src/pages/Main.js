@@ -1,16 +1,16 @@
 import React, { useState, useRef } from "react";
-import { 
-  SafeAreaView, 
-  View, 
-  Text, 
-  StyleSheet, 
-  ActivityIndicator, 
-  TextInput, 
-  Pressable, 
-  Alert, 
-  KeyboardAvoidingView, 
-  ScrollView, 
-  Platform 
+import {
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  TextInput,
+  Pressable,
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform
 } from "react-native";
 import { MapView, Marker } from "./MapComponent";
 import * as Location from "expo-location";
@@ -29,20 +29,20 @@ const UserRegistryScreen = () => {
 
   const onSavePress = async () => {
     const isFormValid = fullName && addressLine && houseNo && town && province;
-    
+
     if (!isFormValid) {
       Alert.alert("Campos Inválidos", "Por favor, informe todos os dados para continuar.");
       return;
     }
 
     const searchAddress = `${addressLine}, ${houseNo}, ${town}, ${province}`;
-    
+
     try {
       const geoResponse = await Location.geocodeAsync(searchAddress);
-      
+
       if (geoResponse && geoResponse.length > 0) {
         const { latitude, longitude } = geoResponse[0];
-        
+
         const registeredTag = {
           uuid: Math.random().toString(),
           personName: fullName,
@@ -50,9 +50,9 @@ const UserRegistryScreen = () => {
           latitude,
           longitude
         };
-        
-        setRegistry((currentList) => [...currentList, registeredPerson]);
-        
+
+        setRegistry((currentList) => [...currentList, registeredTag]);
+
         if (mapViewerRef.current) {
           mapViewerRef.current.animateToRegion({
             latitude,
@@ -61,13 +61,13 @@ const UserRegistryScreen = () => {
             longitudeDelta: 0.008,
           }, 800);
         }
-        
+
         setFullName("");
         setAddressLine("");
         setHouseNo("");
         setTown("");
         setProvince("");
-        
+
         Alert.alert("Feito", "O cadastro da tag foi salvo e posicionado no mapa.");
       } else {
         Alert.alert("Ops!", "Não achamos esse endereço, tente novamente.");
@@ -84,7 +84,7 @@ const UserRegistryScreen = () => {
       </View>
     );
   }
-  
+
   if (!locationData) {
     return (
       <View style={styles.centerBox}>
@@ -93,11 +93,11 @@ const UserRegistryScreen = () => {
       </View>
     );
   }
-  
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView 
-        style={styles.keyboardView} 
+      <KeyboardAvoidingView
+        style={styles.keyboardView}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <View style={styles.mapSection}>
@@ -126,52 +126,52 @@ const UserRegistryScreen = () => {
         <View style={styles.cardSection}>
           <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
             <Text style={styles.heading}>Cadastrar Tag</Text>
-            
-            <TextInput 
-              style={styles.textInput} 
-              placeholder="Nome de tag " 
-              value={fullName} 
-              onChangeText={setFullName} 
+
+            <TextInput
+              style={styles.textInput}
+              placeholder="Nome de tag "
+              value={fullName}
+              onChangeText={setFullName}
               placeholderTextColor="#9ca3af"
             />
-            
-            <TextInput 
-              style={styles.textInput} 
-              placeholder="Endereço (Rua/Av)" 
-              value={addressLine} 
-              onChangeText={setAddressLine} 
+
+            <TextInput
+              style={styles.textInput}
+              placeholder="Endereço (Rua/Av)"
+              value={addressLine}
+              onChangeText={setAddressLine}
               placeholderTextColor="#9ca3af"
             />
-            
+
             <View style={styles.rowLayout}>
-              <TextInput 
-                style={[styles.textInput, styles.halfBox]} 
-                placeholder="Número" 
-                value={houseNo} 
-                onChangeText={setHouseNo} 
-                keyboardType="numeric" 
+              <TextInput
+                style={[styles.textInput, styles.halfBox]}
+                placeholder="Número"
+                value={houseNo}
+                onChangeText={setHouseNo}
+                keyboardType="numeric"
                 placeholderTextColor="#9ca3af"
               />
-              <TextInput 
-                style={[styles.textInput, styles.halfBox]} 
-                placeholder="Estado (UF)" 
-                value={province} 
-                onChangeText={setProvince} 
+              <TextInput
+                style={[styles.textInput, styles.halfBox]}
+                placeholder="Estado (UF)"
+                value={province}
+                onChangeText={setProvince}
                 maxLength={2}
                 placeholderTextColor="#9ca3af"
               />
             </View>
 
-            <TextInput 
-              style={styles.textInput} 
-              placeholder="Cidade" 
-              value={town} 
-              onChangeText={setTown} 
+            <TextInput
+              style={styles.textInput}
+              placeholder="Cidade"
+              value={town}
+              onChangeText={setTown}
               placeholderTextColor="#9ca3af"
             />
-            
-            <Pressable 
-              style={({ pressed }) => [styles.btnPrimary, pressed && { opacity: 0.8 }]} 
+
+            <Pressable
+              style={({ pressed }) => [styles.btnPrimary, pressed && { opacity: 0.8 }]}
               onPress={onSavePress}
             >
               <Text style={styles.btnText}>Salvar Tag</Text>
